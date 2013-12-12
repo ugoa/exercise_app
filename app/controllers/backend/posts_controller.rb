@@ -4,7 +4,21 @@ class Backend::PostsController < Backend::BackendController
     if params[:search].present?
       @posts = Post.find(:all, :conditions => ['title LIKE ?', "%#{params[:search]}%"])
     else
-      @posts = Post.all
+      @posts = Post.order("created_at ASC")
+    end
+  end
+
+  def new
+    @post = Post.new
+  end
+
+  def create
+    @post = Post.new(post_params)
+    
+    if @post.save
+      redirect_to backend_posts_path
+    else
+      render 'new'
     end
   end
   
@@ -15,14 +29,21 @@ class Backend::PostsController < Backend::BackendController
   def update
     @post = Post.find(params[:id])
     
-    if @post.update_attributes(params.require(:post).permit(:title, :content))
+    if @post.update_attributes(post_params)
       redirect_to backend_posts_path
     else
       render :edit
     end
   end
+
+  def destroy
+    @post = Post.find(params[:id])
+    @post.destroy
+    redirect_to backend_posts_path
+  end
   
-  def post_paramssss
-    params.require(:post).permit(:title, :content)
+  private
+  def post_params
+    params.require(:post).permit(:title, :content, :published)
   end
 end

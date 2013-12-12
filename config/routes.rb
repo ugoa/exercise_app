@@ -4,12 +4,16 @@ ExerciseApp::Application.routes.draw do
   namespace :backend do
     resources :posts
   end
+  
+  resources :logins, :only => [:new, :create] do
+    delete 'logout', on: :collection
+  end
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  # root 'welcome#index'
+  root 'posts#index'
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
